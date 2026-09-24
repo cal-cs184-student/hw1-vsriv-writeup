@@ -148,7 +148,7 @@
 		magenta on the red-blue edge, and cyan on the blue-green edge. At the middle is an grayscale color, when all 3 color channels are equal
 
 		<figure>
-			<img src="assets/Task 4 demo.png" alt="Barycentric Coordinates Demo" style="width:50%">
+			<img src="assets/Task 4 demo.png" alt="Barycentric Coordinates Demo" style="width:50%;  border: 2px solid black;">
 			<figcaption style="font-size: 14px">Demonstration of Color Interpolation using Barycentric Coordinates</figcaption>
 		</figure>
 
@@ -157,17 +157,57 @@
 		1136 bytes of color information.  
 
 		<figure>
-			<img src="assets/Task 4.png" alt="Color Wheel" style="width:50%">
+			<img src="assets/Task 4.png" alt="Color Wheel" style="width:50%;  border: 2px solid black;">
 			<figcaption style="font-size: 14px">Color Wheel (svg/basic/test7.svg)</figcaption>
 		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Pixel sampling is a process used for mapping textures onto objects. More specifically, we want to map continuous, normalized 2D texture coordinates 
+		\( (u, v) \) to the integer	texel coordinates \((t_x, t_y)\) on a texture map. To see why this is necessary, let's start with some 3D object located at (x, y).
+		The surface on the object is complicated, but it can be mapped using some matrix to a 2D plane in texture coordinates \( (u, v) \). Now, we want to map a texture
+		to this 2D plane. This requires sampling across the texture coordinates, and converting it into the texel coordinate space in the texture map to get details on color,
+		displacement, and other attributes. 
 
+		<br><br>
+
+		There are a couple of algorithms that accomplish pixel sampling, each with their own tradeoffs. The first is nearest sampling, which converts the 
+		normalized texture coordinates to the texel coordinates \( (t_x = u * width, t_y = v * height) \), rounds the result to the nearest integer, which selects the
+		closest texel. Another algorithm is bilinear sampling, which uses the same conversion between texutre coordinates to texel coordinates, but instead of rounding to 
+		the closest texel, it linearly interpolates between the 4 closest texels. 
+
+		<br><br>
+		
+		Nearest sampling begins to fail at steep angles, as a single texel may cover many screen pixels. Nearest sampling creates jaggies as neighboring pixels are likely
+		to round to the same texel. On the other hand, bilinear sampling blends between texels, solving the jagged edges that comes from nearest sampling, instead 
+		creating smooth color transitions.
+
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/Task 5 - nearest 1.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>Nearest Pixel Sampling <br> Sample Rate = 1 <br><br></figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/Task 5 - linear 1.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>Bilinear Pixel Sampling <br> Sample Rate = 1 <br><br></figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="assets/Task 5 - nearest 16.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>Nearest Pixel Sampling <br> Sample Rate = 16 <br><br></figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="assets/Task 5 - linear 16.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>Bilinear Pixel Sampling <br> Sample Rate = 16 <br><br></figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		</div>
