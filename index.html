@@ -40,25 +40,36 @@
 
 	
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		In this assignment, I worked on creating a functional, 2D rasterizer pipeline that was capable of rendering SVG graphics with a variety of features, like antialiasing
+		transformations, and textures. This progressed from a simple triangle rasterization to adding supersampling for antialiasing, then to integrating homogenous transformation
+		matrices, and finally to supporting texture mapping. 
+
+		Overall, I found the assignment interesting as we finally got to apply all of the many concepts that were discussed in lecture, and it allowed me to get more 
+		familiar with the optimization strategies used to make the images look better with minimal computation. 
+
+		<br><br>
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		For Task 1, the goal was to create a fast way to rasterize a single triangle, without any attempts at subsampling. To do this, I first had to define the bounding box
-		of the triangle. This was done by taking the minimum and maximum of the x and y coordinates of the provided vertices, and ensuring that this box was also limited by 
-		the window width and height as well. Using the bounding box as the range, the program checks whether the pixel is inside the triangle using the line side test:
-		\[L_i(x, y) = -(x - x_i)(y_{j} - y_i) + (y - y_i)(x_{j} - x_i)\]
+		For Task 1, the goal was to create a fast way to rasterize a single triangle, defined by points \[(x_0, y_0), (x_1, y_1), (x_2, y_2) \] without any attempts at subsampling. 
+		To do this, I first had to define the bounding box of the triangle. This was done by taking the minimum and maximum of the x and y coordinates from the provided vertices,
+		and then restricting the bounding box to the screen buffer dimensions (width x height). 
 
-		This test was conducted on the center of the pixel, which is a (0.5, 0.5) offset from the pixel coordinates. If the pixel is within the triangle, checked both in the 
-		clockwise and counterclockwise direction, then the pixel was filled in with the specified color. If not, the pixel was left blank.
-		<br>
-		<br>
-		This time complexity of the algorithm is proportional to the size of the bounding box of the triangle, as that is the range of pixels checked during the computation
+		<br><br>
+
+		With the bounding box defined, the next step was to iterate over every integer pixel coordinate and check whether the pixel was inside the triangle using
+		the line side test:	\[L_i(x, y) = -(x - x_i)(y_{j} - y_i) + (y - y_i)(x_{j} - x_i)\]
+
+		This test was conducted on the center of the pixel, which is a (0.5, 0.5) offset from the pixel coordinates. If the pixel is within the triangle, checked both 
+		in the clockwise (\(L_i &#8804 0\)) and counterclockwise direction (\(L_i &#8805 0\)), then the pixel was filled in with the specified color. 
+		<br><br>
+		My algorithm tests every pixel within the bounding box exactly once, testing at each pixel if the center is within the triangle. Since no pixels outside the bounding
+		box are evaluated, the runtime complexity is proportional to the pixel area of the bounding box of the triangle. With the screen boundary clamp, the algorithm
+		is equal to or slightly better than a standard bounding box rasterizer.
 
 		<figure>
 			<img src="assets/Task 1.png" alt="Triangle" style="width:50%; border: 2px solid black;"\>
 			<figcaption>Capture of Test 4.svg Rasterization</figcaption>
 		</figure>
-
 
 		<!--
 		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
@@ -94,13 +105,11 @@
 		aliasing. Supersampling is the process of using multiple sample points per pixel when doing rasterization. These sample points can be averaged to get a partial
 		shading of the pixel, creating the appearance of a more straight edge as the jagget edges are no longer as pronounced. Therefore, we can use supersampling as 
 		a way of antialiasing the generated images.
-		<br>
-		<br>
+		<br><br>
 		The antiliasing algorithm required a few changes to the overall code. First, the sample buffer had to increase in size proportional to the sample rate, 
 		ensuring that all samples will be able to fit within the buffer. This did require changes to traversal of the sample buffer as indices now had to account for 
 		the 'extra' points introduced by the increased sample rate. 
-		<br>
-		<br>
+		<br><br>
 		For the rasterization algorithm, there were two main changes: the first was the aforementioned traversal of the sample buffer, as each sample had to be checked
 		to determine if the sample was within the triangle. The next was <code>resolve_to_framebuffer()</code>, which had to be modified to average the samples to get
 		the final color value of the pixel. 
@@ -124,10 +133,33 @@
 		</div>
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		For Task 3, the standard homegenous transformations were added to integrate transformations into the SVG. This was used to modify the existing robot.svg
+		by _____
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Bartcentric coordinates (\(\alpha, \beta, \gamma\)) represent a point P inside a triangle as a weighted combination of the vertices A, B, and C. 
+		\[ P = \alpha A + \beta B + \gamma C \]
+		with the restriction that
+		\[ \alpha + \beta + \gamma = 1 \]
+
+		This representation of coordinates within the triangle allows for smooth interpolation of vertex attributes across the interior of a triangle. In our case,
+		this allows us to interpolate the color of the interior pixels based on the color of the vertices. This is shown in the triangle below, where the top vertex is green,
+		the left vertex is red, and the right vertex is blue. At midpoints along the edges, you see the weighted average of the two vertex colors, giving yellow on the red-green edge,
+		magenta on the red-blue edge, and cyan on the blue-green edge. At the middle is an grayscale color, when all 3 color channels are equal
+
+		<figure>
+			<img src="assets/Task 4 demo.png" alt="Barycentric Coordinates Demo" style="width:50%">
+			<figcaption style="font-size: 14px">Demonstration of Color Interpolation using Barycentric Coordinates</figcaption>
+		</figure>
+
+		This allows for smooth color transitions and more detailed coloring without an extensive amount of additional data. For example, the color wheel shown below contains
+		95 triangles, giving us 285 vertices, which each is associated with a 4 byte color value. However, these triangles cover a large area (~31k pixels), yet only require
+		1136 bytes of color information.  
+
+		<figure>
+			<img src="assets/Task 4.png" alt="Color Wheel" style="width:50%">
+			<figcaption style="font-size: 14px">Color Wheel (svg/basic/test7.svg)</figcaption>
+		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
