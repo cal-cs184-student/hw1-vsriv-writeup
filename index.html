@@ -38,17 +38,7 @@
 
 		<a href="https://github.com/cal-cs184-student/hw1-vsriv">GitHub Repository</a>
 
-		<!--
-		<figure>
-			<img src="assets/lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
-		-->
-		
-		<!--
-		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
-
+	
 		<h2>Overview</h2>
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
@@ -65,7 +55,7 @@
 		This time complexity of the algorithm is proportional to the size of the bounding box of the triangle, as that is the range of pixels checked during the computation
 
 		<figure>
-			<img src="assets/Task 1.png" alt="Triangle" style="width:50%"\>
+			<img src="assets/Task 1.png" alt="Triangle" style="width:50%; border: 2px solid black;"\>
 			<figcaption>Capture of Test 4.svg Rasterization</figcaption>
 		</figure>
 
@@ -98,22 +88,38 @@
 		</div>-->
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		In many cases, the triangle does not completely encapsulate the pixel. Instead, it occupies only a section of the pixel. If only one sample point is used, 
+		then this detail may be missed, and the pixel will not be colored. This results in jagged edges on what should be straight triangle edges, which is known as 
+		aliasing. Supersampling is the process of using multiple sample points per pixel when doing rasterization. These sample points can be averaged to get a partial
+		shading of the pixel, creating the appearance of a more straight edge as the jagget edges are no longer as pronounced. Therefore, we can use supersampling as 
+		a way of antialiasing the generated images.
+		<br>
+		<br>
+		The antiliasing algorithm required a few changes to the overall code. First, the sample buffer had to increase in size proportional to the sample rate, 
+		ensuring that all samples will be able to fit within the buffer. This did require changes to traversal of the sample buffer as indices now had to account for 
+		the 'extra' points introduced by the increased sample rate. 
+		<br>
+		<br>
+		For the rasterization algorithm, there were two main changes: the first was the aforementioned traversal of the sample buffer, as each sample had to be checked
+		to determine if the sample was within the triangle. The next was <code>resolve_to_framebuffer()</code>, which had to be modified to average the samples to get
+		the final color value of the pixel. 
+
 
 		<div style="display: flex; flex-direction: row; align-items: center;">
 			<figure>
-				<img src="assets/Task 2-1.png" alt="Triangle" style="width:100%"\>
-				<figcaption>Capture of Test 4.svg Rasterization, Sample Rate = 1</figcaption>
+				<img src="assets/Task 2-1.png" alt="Triangle" style="width:100%; border: 2px solid black;"\>
+				<figcaption  style="font-size: 14px;">Sample Rate = 1</figcaption>
 			</figure>
 
 			<figure>
-				<img src="assets/Task 2-4.png" alt="Triangle" style="width:100%"\>
-				<figcaption>Capture of Test 4.svg Rasterization, Sample Rate = 4</figcaption>
+				<img src="assets/Task 2-4.png" alt="Triangle" style="width:100%; border: 2px solid black;"\>
+				<figcaption style="font-size: 14px;">Sample Rate = 4</figcaption>
 			</figure>
 
 			<figure>
-				<img src="assets/Task 2-16.png" alt="Triangle" style="width:100%"\>
-				<figcaption>Capture of Test 4.svg Rasterization, Sample Rate = 16</figcaption>
+				<img src="assets/Task 2-16.png" alt="Triangle" style="width:100%; border: 2px solid black;"\>
+				<figcaption style="font-size: 14px;">Sample Rate = 16</figcaption>
 			</figure>
 		</div>
 
@@ -132,16 +138,6 @@
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
