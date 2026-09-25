@@ -190,11 +190,13 @@
 		texture, which contains multiple versions of the texture at original to low resolutions, can be used to select the correct resolution. Now when the low resolution
 		texture is applied, the artifacting is not as noticeable.
 
-		If the level sampling method is <code>L_NEAREST</code>, the algorithm first begins with by calculating the mipmap level according to the equation 
+		The algorithm first begins with by calculating the mipmap level according to the equation 
 		\[	\log_2 \left( \max \left( \sqrt{\left(\frac{du}{dx}\right)^2 + \left(\frac{dv}{dx}\right)^2}, \sqrt{\left(\frac{du}{dy}\right)^2 + \left(\frac{dv}{dy}\right)^2} \right) \right)	\]
 
 		where \(	\frac{du}{dx}, \frac{du}{dy}, \frac{dv}{dx}, \frac{dv}{dy}	\) are the change in texture coordinates when stepping 1 pixel in the x and y directions
-		respectively. Next, L is rounded to the nearest integer, and is used by the Pixel Sampling Method (psm) to select which level of the mipmap to sample from.
+		respectively. Next, if the sampling method is <code>L_NEAREST</code> L is rounded to the nearest integer, and is used by the Pixel Sampling Method (psm) to 
+		select which level of the mipmap to sample from. If the sampling method is <code>L_LINEAR</code>, a sample is taken from two levels, \( \lfloor L \rfloor \) and
+		\( \lfloor L \rfloor + 1 \), and the the color of the pixel is calculated by interpolating between these two levels. 
 
 		<br><br>
 
