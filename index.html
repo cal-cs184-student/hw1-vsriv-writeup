@@ -71,33 +71,6 @@
 			<figcaption>Capture of Test 4.svg Rasterization</figcaption>
 		</figure>
 
-		<!--
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>-->
-		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 
 		In many cases, the triangle does not completely encapsulate the pixel. Instead, it occupies only a section of the pixel. If only one sample point is used, 
@@ -208,8 +181,74 @@
 		</div>
 		
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Level sampling is the process of selecting the appropriate mipmap level to downsample textures when applying textures to objects far away. When an object is 
+		far away (minification), a single screen pixel may cover multiple different textures or colors, which can lead to aliasing artifacts. However, a mipmap of the 
+		texture, which contains multiple versions of the texture at original to low resolutions, can be used to select the correct resolution. Now when the low resolution
+		texture is applied, the artifacting is not as noticeable.
+
+		If the level sampling method is <code>L_NEAREST</code>, the algorithm first begins with by calculating the mipmap level according to the equation 
+		\[	\log_2 \left( \max \left( \sqrt{\left(\frac{du}{dx}\right)^2 + \left(\frac{dv}{dx}\right)^2}, \sqrt{\left(\frac{du}{dy}\right)^2 + \left(\frac{dv}{dy}\right)^2} \right) \right)	\]
+
+		where \(	\frac{du}{dx}, \frac{du}{dy}, \frac{dv}{dx}, \frac{dv}{dy}	\) are the change in texture coordinates when stepping 1 pixel in the x and y directions
+		respectively. Next, L is rounded to the nearest integer, and is used by the Pixel Sampling Method (psm) to select which level of the mipmap to sample from.
+
+		<br><br>
+
+		There are clear tradeoffs across these different methods used in the assignment for sampling. Supersampling is very effective as an anti-aliasing tool, but 
+		it scales linearly in both memory and time complexity, making it expensive to use. PIxel sampling incurs no memory tradeoff, and is only slightly more expensive
+		computationally compared to regular rasterization. However, when dealing with minification, it is not effective at anti-aliasing. Level sampling requires just 33% 
+		more memory and does not incur a signifcant computation cost, making it an extremely useful tool at eliminating aliasing and artifacts in textures.
 
 		</div>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/L0PN.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_ZERO and P_NEAREST <br><br> </figcaption>
+				</td>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/L0PN (zoom).png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_ZERO and P_NEAREST (Zoomed In)</figcaption>
+				</td>
+			  </tr>
+
+			  <tr>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/L0PL.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_ZERO and P_LINEAR <br><br> </figcaption>
+				</td>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/L0PL (zoom).png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_ZERO and P_LINEAR (Zoomed In)</figcaption>
+				</td>
+			  </tr>
+
+			  <tr>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/LNPN.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_NEAREST and P_NEAREST <br><br> </figcaption>
+				</td>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/LNPN (zoom).png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_NEAREST and P_NEAREST (Zoomed In)</figcaption>
+				</td>
+			  </tr>
+
+			  <tr>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/LNPL.png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_NEAREST and P_LINEAR <br><br> </figcaption>
+				</td>
+				<td style="text-align: center; padding: 0 10px;">
+				  <img src="assets/LNPL (zoom).png" width="400px" style="border: 2px solid black;"/>
+				  <figcaption>L_NEAREST and P_LINEAR (Zoomed In)</figcaption>
+				</td>
+			  </tr>
+			  
+			</table>
+		</div>
+
 	</body>
 </html>
